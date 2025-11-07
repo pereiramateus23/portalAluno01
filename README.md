@@ -96,3 +96,161 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+    
+  # Portal do Aluno — API Backend
+Este projeto é um backend de autenticação e gerenciamento de alunos, desenvolvido com o framework NestJS, MongoDB e JWT (JSON Web Token).
+O sistema permite o cadastro de usuários (alunos), login com autenticação segura, redefinição de senha e acesso a rotas protegidas como o painel do aluno.
+
+  ## Tecnologias Utilizadas
+
+- NestJS → Framework Node.js baseado em módulos e injeção de dependências.
+
+- TypeScript → Linguagem com tipagem forte para maior segurança no código.
+
+- MongoDB + Mongoose → Banco de dados não relacional e ODM para mapeamento dos dados.
+
+- JWT (JSON Web Token) → Autenticação via token para segurança das rotas.
+
+- bcrypt → Criptografia das senhas dos usuários.
+
+- class-validator / class-transformer → Validação dos dados recebidos pelo backend.
+
+ ## Estrutura do Projeto
+src/
+├── app.module.ts               # Módulo raiz que importa todos os outros
+├── main.ts                     # Arquivo principal para iniciar a aplicação
+│
+├── users/                      # Módulo responsável pelos usuários
+│   ├── users.module.ts
+│   ├── users.controller.ts
+│   ├── users.service.ts
+│   ├── dto/
+│   │   └── create-user.dto.ts  # Define o formato dos dados de cadastro
+│   └── schemas/
+│       └── user.schema.ts      # Estrutura do documento no MongoDB
+│
+├── auth/                       # Módulo de autenticação e segurança
+│   ├── auth.module.ts
+│   ├── auth.service.ts
+│   ├── auth.controller.ts
+│   ├── jwt.strategy.ts         # Estratégia JWT de validação
+│   ├── jwt-auth.guard.ts       # Guarda que protege as rotas privadas
+│
+└── aluno/                      # Módulo com rota protegida (dashboard)
+    ├── aluno.module.ts
+    ├── aluno.controller.ts
+
+
+# Descrição dos Módulos
+
+## UsersModule
+
+Responsável por registrar novos usuários (alunos).
+
+## Principais arquivos:
+
+- users.controller.ts: Recebe as requisições HTTP.
+
+- users.service.ts: Faz a lógica de criação do usuário.
+
+- user.schema.ts: Define os campos no MongoDB (nome, email, senha, token de redefinição, etc).
+
+As senhas são criptografadas com bcrypt antes de serem salvas no banco.
+
+## AuthModule
+
+Gerencia login, autenticação JWT e redefinição de senha.
+
+## Principais arquivos:
+
+- auth.controller.ts: Define as rotas /auth/login e /auth/reset-password.
+
+- auth.service.ts: Valida as credenciais, gera tokens JWT e controla redefinições.
+
+- jwt.strategy.ts: Configura como o NestJS valida o token.
+
+- jwt-auth.guard.ts: Protege rotas privadas, verificando se o token é válido.
+
+## AlunoModule
+
+Simula uma área restrita, acessível apenas com autenticação.
+
+## Principais arquivos:
+- aluno.controller.ts: Possui a rota /aluno/dashboard, protegida por JwtAuthGuard.
+Exemplo de retorno:
+{
+  "mensagem": "Bem-vindo, teste@teste.com!",
+  "usuario": "690ce9d8117e0aacab924fdc"
+}
+
+# Como funciona a Autenticação
+
+## Cadastro (POST /users/register)
+O aluno envia nome, email e senha.
+O backend salva o usuário no MongoDB com a senha criptografada.
+
+## Login (POST /auth/login)
+O usuário informa email e senha.
+Se estiver correto, o sistema gera um token JWT.
+
+## Acesso protegido (GET /aluno/dashboard)
+Para acessar esta rota, o usuário precisa enviar o token no header
+Authorization: Bearer <seu_token_aqui>
+
+E O backend valida o token e retorna os dados do usuário logado.
+Etapa  Método | Rota | Corpo (JSON) | 
+
+#  Banco de Dados (MongoDB)
+
+Banco: portalAluno01
+Coleção: users
+
+## Estrutura do documento:
+{
+  "_id": "690ce9d8117e0aacab924fdc",
+  "nome": "Aluno Teste",
+  "email": "teste@teste.com",
+  "senha": "$2b$10$xxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  "resetToken": null,
+  "resetTokenExpiration": null,
+  "__v": 0
+}
+
+# Segurança
+
+- Senhas criptografadas com bcrypt.
+
+- Autenticação JWT — apenas quem tem token válido acessa áreas restritas.
+
+- Validação de dados — via class-validator.
+
+- Proteção contra tokens expirados — expiração configurada em 1 hora.
+
+# Boas Práticas Implementadas
+
+- Separação de módulos (Users, Auth, Aluno)
+- Uso de DTOs e validações
+- Injeção de dependências via NestJS
+- Middleware de autenticação JWT
+- Mensagens de erro claras e padronizadas
+- Código limpo e escalável
+
+# Como rodar: 
+##  Clonar o repositório
+git clone https://github.com/seu-usuario/portalAluno01.git
+
+## Instalar as dependências
+npm install
+
+## Rodar o servidor em modo de desenvolvimento
+npm run start:dev
+
+
+# Autor
+Nome: Mateus Pereira da Rosa
+Projeto: Portal do Aluno — NestJS + MongoDB + JWT
+Disciplina: Desenvolvimento Backend com Node.js
+Professor: Henrique
+ 
+
